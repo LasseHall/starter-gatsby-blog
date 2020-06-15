@@ -15,6 +15,11 @@ exports.createPages = ({ graphql, actions }) => {
                 node {
                   title
                   slug
+                  shopifyProductVariantList {
+                    ...on ContentfulShopifyProduct {
+                      variantId
+                    }
+                  }
                 }
               }
             }
@@ -33,6 +38,7 @@ exports.createPages = ({ graphql, actions }) => {
             component: blogPost,
             context: {
               slug: post.node.slug,
+              variantId: "Shopify__ProductVariant__" + post.node.shopifyProductVariantList[0].variantId,
             },
           })
         })

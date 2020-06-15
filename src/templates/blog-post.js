@@ -10,6 +10,7 @@ import heroStyles from '../components/hero.module.css'
 class BlogPostTemplate extends React.Component {
   render() {
     const post = get(this.props, 'data.contentfulBlogPost')
+    const shop = get(this.props, 'data.shopifyProductVariant')
     const siteTitle = get(this.props, 'data.site.siteMetadata.title')
 
     return (
@@ -32,11 +33,21 @@ class BlogPostTemplate extends React.Component {
             >
               {post.publishDate}
             </p>
+            <div>
+              <p>
+                Shopify SKU: {shop.sku}
+              </p>
+              <p>
+                Shopify Title: {shop.title}
+              </p>
+              <img src={shop.image.originalSrc} alt={shop.title} />
+            </div>
             <div
               dangerouslySetInnerHTML={{
                 __html: post.body.childMarkdownRemark.html,
               }}
             />
+
           </div>
         </div>
       </Layout>
@@ -47,7 +58,7 @@ class BlogPostTemplate extends React.Component {
 export default BlogPostTemplate
 
 export const pageQuery = graphql`
-  query BlogPostBySlug($slug: String!) {
+  query BlogPostBySlug($slug: String!, $variantId: String!) {
     contentfulBlogPost(slug: { eq: $slug }) {
       title
       publishDate(formatString: "MMMM Do, YYYY")
@@ -62,5 +73,14 @@ export const pageQuery = graphql`
         }
       }
     }
+    shopifyProductVariant(id: {eq: $variantId}) {
+      sku
+      title
+      image {
+        originalSrc
+      }
+    }
   }
 `
+
+
